@@ -3,14 +3,94 @@
  *
  */
 
+var classes = {
+	layout: 'carousel_layout',
+	carousel: 'carousel',
+	runner: 'carousel_runer',
+	index_button: 'carousel_index_button',
+	dir_button: 'carousel_dir_button',
+	clicked_button: 'carousel_clicked_button',
+	disabled_button: 'carousel_disabled_button',
+	prev: 'carousel_prev',
+	next: 'carousel_next'
+};
+
+// 函数的默认配置参数
+var getDefault = function() {
+
+	return {
+
+		// 可视区域配置
+		// @required
+		view: {
+			width: undefined,
+			height: undefined
+		},
+
+		// 轮播步长
+		// 如果子项已经设置好了固定高宽，则可以忽略此项，这个条件下横向或纵向的轮播效果可以通过函数内部自动获取步长
+		// @type
+		//	1. {string} 按照即将播放的元素的 长或宽，该配置下，函数会自动根据view 的设置对子项进行设置
+		//	2. {number}
+		step: 'auto',
+
+		// 如果没有数据传入，则直接使用指定 element 中的 dom 作为list 数据
+		// @required 或者 根据selector 参数中的配置从指向的 element 容器里获取数据
+		// @type
+		// 	1. {undefined} 从 element 中获取
+		//	2. {Array} [{},{},{},...]
+		data: undefined,
+
+		// 用于传递数据方式时的模板渲染
+		template: {
+			outer: '<${outer} class="' + classes.carousel + '">',
+			inner: '<${inner}><img src="{url}" /></${inner}>'
+		},
+
+		// 选择器
+		selector: {
+			outer: 'ul',
+			inner: 'li'
+		},
+
+		// 索引按钮
+		indexButton: true,
+
+		// 方向按钮
+		dirButton: true,
+
+		// 动画的执行时间(ms)
+		duration: 300,
+
+		// 默认展示的索引元素
+		index: 0,
+
+		// 动画类型
+		// @allow params:
+		//	1.fade 渐隐渐现
+		//	2.silde 滑动
+		animateType: 'silde',
+
+		// 动画执行方向，该参数在 渐现效果中无效
+		// @allow params:
+		//	1.hori
+		//	2.vert
+		animateDir: 'hori',
+
+		// 回调函数
+		onAnimateBefore: function(runner) {},
+		onAnimateComplete: function(runner) {}
+
+	}
+};
+
 var carousel = function(selector, options) {
 
 	this.elems = {
 		source: $(selector)
 	};
 
-	// 点击的准备进行动画的参数
-	// this.params = {};
+	this.def = getDefault();
 
 	$.extend(this.def, options);
 
@@ -28,14 +108,8 @@ var carousel = function(selector, options) {
 };
 
 
+// 私有函数，不可被修改
 var pri = {};
-
-pri.classes = {
-	layout: 'carousel_layout',
-	carousel: 'carousel',
-	runner: 'carousel_runer',
-	buttons: 'carousel_buttons'
-};
 
 // 初始化，绑定一些必需的函数
 pri.init = function() {
@@ -43,22 +117,18 @@ pri.init = function() {
 	var arr = this.def.data;
 
 	if (arr && $.isArray(arr)) {
-
 		pri.printDOM.call(this);
 	} else {
-		// 原始的 dom
-		var $outer = this.elems.source.find(this.def.selector.outer);
-
-		$outer.wrap(pri.getWrap());
+		this.elems.source.find(this.def.selector.outer).wrap(pri.getWrap.call(this));
 	}
+
+	this.elems.source.find('.' + classes.runner).wrap('<div class="' + classes.layout + ' carousel_' + this.def.animateDir + '">');
 
 	pri.store.call(this);
 
-	if (this.def.isbuttons) {
-		pri.printButtons.call(this);
-	}
+	pri.updateWrapStyle.call(this);
 
-	pri.setStyles.call(this);
+	pri.printButtons.call(this);
 
 	pri.bindEvent.call(this);
 };
@@ -87,158 +157,265 @@ pri.printDOM = function() {
 	dom_arr.push(temp.outer.replace(/^</, '</'));
 
 	this.elems.source.html(
-		pri.getWrap(dom_arr.join(''))
+		pri.getWrap.call(this, dom_arr.join(''))
 	);
+};
+
+// 储存常用元素
+pri.store = function() {
+	this.elems.layout = this.elems.source.find('.' + classes.layout);
+	this.elems.runner = this.elems.source.find('.' + classes.runner);
+
+	this.elems.list = this.elems.runner.find(this.def.selector.inner);
+};
+
+// 创建轮播的控制按钮
+pri.printButtons = function() {
+
+	var getter = sizeGetter(this.def.animateDir),
+		dom_arr = [],
+		size = this.elems.runner[getter.outer](),
+		// 根据总长度除以步长，粗略计算按钮个数
+		len = Math.round(size / this.def.step - ((this.def.view[getter.def] - this.def.step) / this.def.step));
+
+	if (isNaN(len)) {
+		len = this.elems.list.length
+	}
+
+	// 索引按钮，对应子项
+	if (!this.elems.source.find('.' + classes.index_button).length) {
+
+		this.elems.layout.append('<div class="' + classes.index_button + '"></div>');
+
+		// 添加该元素到 elems 中
+		this.elems.indexButton = this.elems.layout.find('.' + classes.index_button);
+	}
+	
+	for (var i = 0; i < len; i++) {
+		dom_arr.push('<span to="' + i + '">' + (i + 1) + '</span>');
+	}
+
+	this.elems.indexButton.html(dom_arr.join(''));
+
+
+	// 轮播方向按钮
+	if (!this.elems.source.find('.' + classes.dir_button).length) {
+
+		this.elems.layout.append('<div class="' + classes.dir_button + '"></div>');
+
+		// 添加该元素到 elems 中
+		this.elems.dirButton = this.elems.layout.find('.' + classes.dir_button);
+
+		this.elems.dirButton.html('<span to="prev" class="' + classes.prev + '"></span><span to="next" class="' + classes.next + '"></span>');
+	}
+
+
+	if (!this.def.indexButton) {
+		this.elems.indexButton.hide();
+	}
+
+	if (!this.def.dirButton) {
+		this.elems.dirButton.hide();
+	}
 };
 
 // 添加外层包容的 DOM
 pri.getWrap = function(str) {
 
-	return '<div class="' + pri.classes.layout + '">\
-			<div class="' + pri.classes.runner + '">' + (str || '') + '</div>\
-		</div>';
+	return '<div class="' + classes.runner + '">' + (str || '') + '</div>';
 };
 
-pri.store = function() {
-	this.elems.layout = this.elems.source.find('.' + pri.classes.layout);
-	this.elems.runner = this.elems.source.find('.' + pri.classes.runner);
+// 设置必备的样式
+pri.updateWrapStyle = function() {
 
-	this.elems.list = this.elems.runner.find(this.def.selector.inner);
-};
+	var getter = sizeGetter(this.def.animateDir);
 
-// 创建轮播按钮
-pri.printButtons = function() {
-
-	if (!this.elems.source.find('.' + pri.classes.buttons).length) {
-
-		this.elems.layout.append('<div class="' + pri.classes.buttons + '"></div>');
-
-		// 添加该元素到 elems 中
-		this.elems.buttons = this.elems.layout.find('.' + pri.classes.buttons);
-	}
-
-	var dom_arr = [];
-
-	for (var i = 0; i < this.elems.list.length; i++) {
-		dom_arr.push('<span to="' + i + '">' + (i + 1) + '</span>');
-	}
-
-	this.elems.buttons.html(dom_arr.join(''));
-};
-
-// 设置必备参数
-pri.setStyles = function() {
 	// 非设置步长未传參的统一设置步长
-	if (typeof this.def.step !== 'number') {
-
-		var items = this.elems.list;
-
-		this.def.step = items.eq(0).outerWidth();
+	// 自动模式下，使用可视配置进行配置
+	if (this.def.step == 'auto') {
+		this.elems.list.css(this.def.view);
+		this.def.step = this.elems.list.eq(0)[getter.outer]();
 	}
 
-	var layout_size = this.def.step * items.length;
+	var runner_size = this.elems.list.eq(0)[getter.outer]() * this.elems.list.length;
 
-	// 为外层容器设置size
-	this.elems.runner.width(layout_size);
+	// 为外层动画容器设置size
+	this.elems.runner[getter.def](runner_size);
 
 	// 设置 layout 容器高宽
 	this.elems.layout.css(this.def.view);
+};
+
+// 根据横向或纵向的传參或者要设置或将要使用的相关属性
+function sizeGetter(dir) {
+	// 横向
+	if (dir == 'hori') {
+		return {
+			outer: 'outerWidth',
+			inner: 'innerWidth',
+			def: 'width',
+			dir: 'left'
+		};
+	}
+	// 纵向
+	else if (dir == 'vert') {
+		return {
+			outer: 'outerHeight',
+			inner: 'innerHeight',
+			def: 'height',
+			dir: 'top'
+		};
+	} else {
+		throw ('Function[sizeGetter] params error.')
+	}
 };
 
 // 绑定按钮等交互事件
 pri.bindEvent = function() {
 	var _this = this;
 
-	this.elems.buttons.delegate('span', 'click', function(event) {
+	// 索引按钮绑定事件
+	this.elems.indexButton.delegate('span', 'click.carousel', function(event) {
 
-		var // 动画终点元素
-			end_elem = null,
-			to = $(event.target).attr('to');
+		if ($(event.target).hasClass(classes.clicked_button)) {
+			return;
+		}
 
-		// 播放到 指定 Element
-		if (/[#\.]/.test(to)) {
-			end_elem = $(to);
+		var // 动画终点元素索引
+			to = $(event.target).attr('to'),
+
+			is_nan = isNaN(Number(to)),
+			index = null,
+			elem = null;
+
+		// 索引
+		if (is_nan == false) {
+			index = Number(to);
+		} else {
+			throw ('Carousel params error - check: button {to}');
 		}
-		// 播放到 当前滚动列表的某索引项
-		else {
-			end_elem = _this.elems.list.eq(to);
-		}
+
+		elem = _this.elems.list.eq(to)
 
 		// 动画开始之前的回调
 		_this.def.onAnimateBefore.call(_this, _this.elems.runner);
 
-		_this.animate(end_elem);
+		_this.animate(index, elem);
+
+		// 更改按钮样式
+		pri.updateButtonStyle.call(_this, event.target);
 	});
+
+	this.elems.indexButton.find('span').eq(this.def.index).trigger('click.carousel');
+
+
+	// 方向按钮绑定事件
+	this.elems.dirButton.delegate('span', 'click.carousel', function(event) {
+
+		var $cur_index_button = _this.elems.indexButton.find('span.' + classes.clicked_button),
+			// prev, next
+			type = $(event.target).attr('to'),
+
+			// 即将触发的索引按钮
+			$to_index_button = $cur_index_button[type]();
+
+		// 到达最后一个
+		if (type == 'next' && !$to_index_button.length) {
+			$to_index_button = _this.elems.indexButton.find('span').eq(0);
+		}
+		// 到达第一个
+		if (type == 'prev' && !$to_index_button.length) {
+			$to_index_button = _this.elems.indexButton.find('span').eq(_this.elems.indexButton.find('span').length - 1);
+		}
+
+		$to_index_button.trigger('click.carousel');
+	});
+
+};
+
+// 改变按钮点击后的样式
+pri.updateButtonStyle = function(clicked_button) {
+	$(clicked_button).addClass(classes.clicked_button);
+	$(clicked_button).siblings().removeClass(classes.clicked_button);
+};
+
+// 更新相关属性
+pri.update = function() {
+
+	var _this = this;
+
+	return {
+
+		// 更新默认相关配置属性
+		def: function(k, v) {
+			var _def = _this.def;
+
+			for (var key in _def) {
+				if (_def[k]) {
+					_def[k] = v;
+				} else {
+					throw ('Carousel [' + k + '] is unkown.');
+				}
+			}
+		}
+	};
 };
 
 
 // 添加可修改扩展的接口
 var fn = carousel.prototype;
 
-fn.def = {
-	// 用于传递数据方式时的模板渲染
-	template: {
-		outer: '<${outer} class="' + pri.classes.carousel + '">',
-		inner: '<${inner}><img src="{url}" /></${inner}>'
-	},
-
-	// 选择器
-	selector: {
-		outer: 'ul',
-		inner: 'li'
-	},
-
-	// 如果没有数据传入，则直接使用指定 element 中的 dom 作为list 数据
-	// @type - #default: 1
-	// 	1. {boolean, ...} false, null, '', ...
-	//	2. {Array} [{},{},{},...]
-	data: false,
-
-	// 轮播步长
-	// @type - #defualt: 1
-	//	1. {boolean} 按照即将播放的元素的 长或宽
-	//	2. {number}
-	step: false,
-
-	isbuttons: true,
-
-	// 可视区域配置
-	view: {
-		width: 'auto',
-		height: 'auto'
-	},
-
-	// 动画的执行时间(ms)
-	duration: 400,
-
-	// 回调函数
-	onAnimateBefore: function() {},
-	onAnimateComplete: function() {}
-};
-
 // 提供修改动画的某些参数
-fn.update = function(callback) {
+fn.update = function(method) {
 
-	
+	method.call(pri.update.call(this));
 };
 
 // 动画接口，该函数允许被修改
-fn.animate = function(end_elem) {
+fn.animate = function(index, elem) {
 
-	var _this = this,
-		end = end_elem.position().left * -1;
+	var method = (this.effect[this.def.animateType]);
 
-	var anmi_params = {
-		left: end
-	};
+	if (method !== undefined) {
+		method.call(this, index, elem);
+	} else {
+		throw ('Carousel animateType [' + this.def.animateType + '] is unkown.');
+	}
+};
 
-	this.elems.runner.animate(anmi_params, {
+// 动画特效执行包
+fn.effect = {
 
-		duration: this.def.duration,
-		complete: function() {
-			_this.def.onAnimateComplete.call(_this, _this.elems.runner);
-		}
-	});
+	// 渐隐渐现效果
+	fade: function(index, elem) {
+
+		var elem = this.elems.list.eq(index);
+
+		elem.fadeIn(this.def.duration);
+		elem.siblings().hide();
+	},
+
+	// 滑动效果
+	silde: function(index, elem) {
+
+		var _this = this,
+
+			end = this.def.step * index * -1,
+
+			getter = sizeGetter(this.def.animateDir),
+
+			ani_params = {};
+
+		ani_params[getter.dir] = end;
+
+		this.elems.runner.animate(ani_params, {
+
+			duration: this.def.duration,
+			complete: function() {
+				_this.def.onAnimateComplete.call(_this, _this.elems.runner);
+			}
+		});
+	}
 };
 
 
