@@ -71,6 +71,12 @@ var getDefault = function() {
 		//	2.silde 滑动
 		animateType: 'silde',
 
+		// 是否自动播放
+		autoPlay: true,
+
+		// 自动播放的切换延迟(ms)
+		autoDelay: 4000,
+
 		// 动画执行方向，该参数在 渐现效果中无效
 		// @allow params:
 		//	1.hori
@@ -84,6 +90,7 @@ var getDefault = function() {
 	}
 };
 
+// 主函数
 var carousel = function(selector, options) {
 
 	this.elems = {
@@ -116,15 +123,18 @@ pri.init = function() {
 
 	var arr = this.def.data;
 
+	// 从数组数据中获取
 	if (arr && $.isArray(arr)) {
 		pri.printDOM.call(this);
-	} else {
+	} 
+	// 从dom 中提取数据
+	else {
 		this.elems.source.find(this.def.selector.outer).wrap(pri.getWrap.call(this));
 	}
 
 	this.elems.source.find('.' + classes.runner).wrap('<div class="' + classes.layout + ' carousel_' + this.def.animateDir + '">');
 
-	pri.store.call(this);
+	pri.storeElems.call(this);
 
 	pri.updateWrapStyle.call(this);
 
@@ -133,7 +143,7 @@ pri.init = function() {
 	pri.bindEvent.call(this);
 };
 
-// 通过data 的数据渲染dom
+// 通过data 的数据渲染 dom
 pri.printDOM = function() {
 
 	var arr = this.def.data,
@@ -162,7 +172,7 @@ pri.printDOM = function() {
 };
 
 // 储存常用元素
-pri.store = function() {
+pri.storeElems = function() {
 	this.elems.layout = this.elems.source.find('.' + classes.layout);
 	this.elems.runner = this.elems.source.find('.' + classes.runner);
 
@@ -209,11 +219,12 @@ pri.printButtons = function() {
 		this.elems.dirButton.html('<span to="prev" class="' + classes.prev + '"></span><span to="next" class="' + classes.next + '"></span>');
 	}
 
-
+	// 隐藏索引按钮
 	if (!this.def.indexButton) {
 		this.elems.indexButton.hide();
 	}
 
+	// 隐藏方向按钮
 	if (!this.def.dirButton) {
 		this.elems.dirButton.hide();
 	}
@@ -246,6 +257,26 @@ pri.updateWrapStyle = function() {
 	this.elems.layout.css(this.def.view);
 };
 
+// 播放组件
+pri.play = {
+	start: function() {
+		
+		clearInterval(this.play_timer);
+
+		var _this = this;
+
+		this.play_timer = null;
+
+		this.play_timer = setInterval(function() {
+			_this.elems.dirButton.find('span.'+classes.next).trigger('click.carousel');
+		}, this.def.autoDelay);
+	},
+
+	stop: function() {
+		clearInterval(this.play_timer);
+	}
+}
+
 // 根据横向或纵向的传參或者要设置或将要使用的相关属性
 function sizeGetter(dir) {
 	// 横向
@@ -271,6 +302,7 @@ function sizeGetter(dir) {
 };
 
 // 绑定按钮等交互事件
+// 事件内部根据不同的交互功能实现不同的业务逻辑，然后调用 animate 函数
 pri.bindEvent = function() {
 	var _this = this;
 
@@ -310,6 +342,7 @@ pri.bindEvent = function() {
 
 
 	// 方向按钮绑定事件
+	// 该事件实现业务逻辑之后调用索引按钮的事件
 	this.elems.dirButton.delegate('span', 'click.carousel', function(event) {
 
 		var $cur_index_button = _this.elems.indexButton.find('span.' + classes.clicked_button),
@@ -330,6 +363,19 @@ pri.bindEvent = function() {
 
 		$to_index_button.trigger('click.carousel');
 	});
+
+	// 是否自动播放
+	// 调用方向按钮的 next 按钮的事件
+	if( this.def.autoPlay ) {
+
+		pri.play.start.call(this);
+
+		this.elems.layout.hover(function() {
+			pri.play.stop.call(_this);
+		}, function() {
+			pri.play.start.call(_this);
+		});
+	}
 
 };
 
