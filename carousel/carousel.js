@@ -6,8 +6,8 @@
  */
 
 var classes = {
-	layout: 'carousel_layout',
 	carousel: 'carousel',
+	layout: 'carousel_layout',
 	runner: 'carousel_runer',
 	index_button: 'carousel_index_button',
 	dir_button: 'carousel_dir_button',
@@ -99,6 +99,8 @@ var carousel = function(selector, options) {
 		source: $(selector)
 	};
 
+	this.selector = selector;
+
 	this.def = getDefault();
 
 	$.extend(this.def, options);
@@ -116,6 +118,9 @@ var carousel = function(selector, options) {
 	return this;
 };
 
+function _throw(selector, detail) {
+	throw ('Carousel: selector -> [' + selector + '], details -> ' + detail);
+}
 
 // 私有函数，不可被修改
 var pri = {};
@@ -123,12 +128,16 @@ var pri = {};
 // 初始化，绑定一些必需的函数
 pri.init = function() {
 
+	if (this.def.view.width == undefined || this.def.view.height == undefined) {
+		_throw(this.selector, 'def.view');
+	}
+
 	var arr = this.def.data;
 
 	// 从数组数据中获取
 	if (arr && $.isArray(arr)) {
 		pri.printDOM.call(this);
-	} 
+	}
 	// 从dom 中提取数据
 	else {
 		this.elems.source.find(this.def.selector.outer).wrap(pri.getWrap.call(this));
@@ -184,7 +193,7 @@ pri.storeElems = function() {
 // 创建轮播的控制按钮
 pri.printButtons = function() {
 
-	var getter = sizeGetter(this.def.animateDir),
+	var getter = sizeGetter.call(this, this.def.animateDir),
 		dom_arr = [],
 		size = this.elems.runner[getter.outer](),
 		// 根据总长度除以步长，粗略计算按钮个数
@@ -202,7 +211,7 @@ pri.printButtons = function() {
 		// 添加该元素到 elems 中
 		this.elems.indexButton = this.elems.layout.find('.' + classes.index_button);
 	}
-	
+
 	for (var i = 0; i < len; i++) {
 		dom_arr.push('<span to="' + i + '">' + (i + 1) + '</span>');
 	}
@@ -241,7 +250,7 @@ pri.getWrap = function(str) {
 // 设置必备的样式
 pri.updateWrapStyle = function() {
 
-	var getter = sizeGetter(this.def.animateDir);
+	var getter = sizeGetter.call(this, this.def.animateDir);
 
 	// 非设置步长未传參的统一设置步长
 	// 自动模式下，使用可视配置进行配置
@@ -262,7 +271,7 @@ pri.updateWrapStyle = function() {
 // 播放组件
 pri.play = {
 	start: function() {
-		
+
 		clearInterval(this.play_timer);
 
 		var _this = this;
@@ -270,7 +279,7 @@ pri.play = {
 		this.play_timer = null;
 
 		this.play_timer = setInterval(function() {
-			_this.elems.dirButton.find('span.'+classes.next).trigger('click.carousel');
+			_this.elems.dirButton.find('span.' + classes.next).trigger('click.carousel');
 		}, this.def.autoDelay);
 	},
 
@@ -299,7 +308,7 @@ function sizeGetter(dir) {
 			dir: 'top'
 		};
 	} else {
-		throw ('Function[sizeGetter] params error.')
+		_throw(this.selector, 'Function sizeGetter params error');
 	}
 };
 
@@ -326,7 +335,7 @@ pri.bindEvent = function() {
 		if (is_nan == false) {
 			index = Number(to);
 		} else {
-			throw ('Carousel params error - check: button {to}');
+			_throw(_this.selector, 'index button {attr=to} type error');
 		}
 
 		elem = _this.elems.list.eq(to)
@@ -368,7 +377,7 @@ pri.bindEvent = function() {
 
 	// 是否自动播放
 	// 调用方向按钮的 next 按钮的事件
-	if( this.def.autoPlay ) {
+	if (this.def.autoPlay) {
 
 		pri.play.start.call(this);
 
@@ -402,7 +411,7 @@ pri.update = function() {
 				if (_def[k]) {
 					_def[k] = v;
 				} else {
-					throw ('Carousel [' + k + '] is unkown.');
+					_throw(_this.selector, 'def params [' + k + '] unkown.');
 				}
 			}
 		}
@@ -427,7 +436,7 @@ fn.animate = function(index, elem) {
 	if (method !== undefined) {
 		method.call(this, index, elem);
 	} else {
-		throw ('Carousel animateType [' + this.def.animateType + '] is unkown.');
+		_throw(this.selector, 'animateType [' + this.def.animateType + '] unkown.');
 	}
 };
 
@@ -450,7 +459,7 @@ fn.effect = {
 
 			end = this.def.step * index * -1,
 
-			getter = sizeGetter(this.def.animateDir),
+			getter = sizeGetter.call(this, this.def.animateDir),
 
 			ani_params = {};
 
