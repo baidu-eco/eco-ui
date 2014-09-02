@@ -1,5 +1,7 @@
 /**
  * Carousel 轮播组件
+ * Deo - denglingbo@126.com
+ * Date: 2014.09.02
  *
  */
 
