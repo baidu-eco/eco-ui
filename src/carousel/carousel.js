@@ -215,12 +215,6 @@ define('common:udo/ui/carousel', function(require, exports, module) {
 			// 根据总长度除以步长，粗略计算按钮个数
 			len = Math.round(size / this.def.step - ((this.def.view[getter.def] - this.def.step) / this.def.step));
 
-
-
-// console.log(this.elems.runner.innerHeight())	
-// console.log(size)
-// console.log(this.def.step)
-
 		if (isNaN(len)) {
 			len = this.elems.list.length
 		}
