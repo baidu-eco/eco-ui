@@ -1,0 +1,136 @@
+body, input, textarea, iframe, form, button {
+	background: #f5f5f5;
+	font: 12px/18px 'Consolas', 'Arail';
+	color: #333;
+}
+
+html, body {
+	height: 100%;
+}
+
+input, button, span, label {
+	vertical-align: middle;
+}
+
+
+.header {
+	position: fixed;
+	width: 100%;
+	height: 60px;
+	background: #3C4E62;
+	z-index: 2;
+}
+	a.logo {
+		cursor: pointer;
+		display: block;
+		margin: 15px 0 0 20px;
+		width: 220px;
+		height: 30px;
+		background: url(../img/logo.png) no-repeat 0 0;
+		float: left;
+	}
+
+	.topsearch {
+		float: right;
+		margin: 15px 15px 0 0;
+	}
+	.topsearch input {
+		border: none;
+		width: 220px;
+		height: 20px;
+		line-height: 20px;
+		font-size: 14px;
+		border-radius: 10px 0 0 10px;
+		outline: none;
+		padding: 5px 15px;
+		background: #f2f2f2;
+		color: #666;
+	}
+	.topsearch button {
+		border: none;
+		width: 35px;
+		height: 30px;
+		border-radius: 0 10px 10px 0;
+		/*border-left: 1px solid #AD483A;*/
+		outline: none;
+		cursor: pointer;
+		background: url('../img/search.png') no-repeat 45% 50% #EE6352;
+	}
+	.topsearch button:hover {
+		background-color: #C2503F;
+	}
+
+.left_outter {
+	width: 220px;
+	height: 100%;
+	background: #6BBBE7;
+	position: relative;
+	float: left;
+	z-index: 1;
+}
+	.left_outter .left_inner {
+		margin-top: 60px;
+	}
+
+	.sidemenu {
+		/*padding: 5px 0;*/
+	}
+	.sidemenu li a {
+		display: block;
+		padding: 10px 20px;
+		cursor: pointer;
+		text-align: right;
+		color: #fff;
+		text-decoration: none;
+	}
+	.sidemenu li a:hover {
+		background: #85C7EB;
+		color: #666;
+	}
+	.sidemenu li a.current:hover, .sidemenu li a.current {
+		background: #9ED2EF;
+		color: #333;
+	}
+
+
+.right_outter {
+	width: 100%;
+	height: 100%;
+	background: #eee;
+	position: absolute;
+	overflow-y: auto;
+}
+	.right_outter .right_inner {
+		margin-top: 60px;
+		margin-left: 220px;
+		padding: 20px 25px;
+	}
+
+
+
+
+
+
+pre {
+	background: #f5f5f5;
+	font: 12px/18px 'Consolas', 'Arail';
+	color: #666;
+	border: 1px solid #ccc;
+	padding: 10px;
+	margin: 0 0 20px 0;
+}
+
+.code-title {
+	border: 1px solid #ccc;
+	border-bottom: none;
+	background: #eee;
+	color: #333;
+	margin: 0;
+	padding: 5px 10px;
+}
+.code-html, .code-js {}
+
+.code-js {
+	color: #333;
+	font-style: italic;
+}

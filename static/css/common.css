@@ -1,0 +1,30 @@
+
+body, html, iframe, input, textarea, form, button, ul, li, ol, p, dl, dd, dt, table, h1, h2, h3, h4, h5, h6, img {
+	margin: 0;
+	padding: 0;
+}
+
+ol, ul, li { 
+	list-style: none;
+}
+
+.clearfix:after { 
+	content: " "; 
+	display: block; 
+	height: 0; 
+	clear: both; 
+	visibility: hidden; 
+	line-height: 0px;
+}
+.clearfix { 
+	display: inline-table; 
+}
+* html .clearfix { 
+	height: 1%; 
+}
+*+html .clearfix { 
+	zoom: 1;
+}
+.clearfix { 
+	display: block;
+}

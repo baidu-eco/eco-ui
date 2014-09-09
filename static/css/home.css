@@ -1,0 +1,33 @@
+.submain {
+	display: none;
+}
+
+h3 {
+	font-size: 16px;
+	color: #333;
+	font-weight: normal;
+	margin-bottom: 30px;
+}
+
+
+
+.code_params {
+	margin-bottom: 30px;
+}
+.code_params li {
+	line-height: 20px;
+	margin: 0 0 8px 20px;
+	list-style: decimal;
+}
+.code_params li em {
+	display: inline-block;
+	margin-left: 10px;
+	color: #999;
+}
+.code_params li p {
+	color: #777;
+}
+
+.code_params b {
+	color: #3C4E62;
+}

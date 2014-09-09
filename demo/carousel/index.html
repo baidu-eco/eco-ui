@@ -1,0 +1,195 @@
+
+<link rel="stylesheet" type="text/css" href="/tsm-ui/src/carousel/carousel.css">
+<style type="text/css">
+.demo {
+	margin: 0 0 25px 0;
+}
+.carousel1 li {
+	width: 400px;
+	height: 160px;
+	float: left;
+	overflow: hidden;
+}
+
+
+.carousel2 li {
+	width: 200px;
+	text-align: center;
+	line-height: 160px;
+	font-size: 30px;
+	float: left;
+}
+.carousel2 ul li:nth-child(odd) {
+	background: #ddd;
+}
+
+.carousel3 {}
+
+
+</style>
+
+
+<script>
+var demo_data = [{
+	data: '<img src="/tsm-ui/static/img/demo/1.jpg" />' }, {
+	data: '<img src="/tsm-ui/static/img/demo/2.jpg" />' }, {
+	data: 'data html'
+}];
+
+</script>
+
+<h3>Carousel 实例</h3>
+
+<ol class="code_params">
+	<li>
+		<b>view {
+			width: undefined,
+			height: undefined
+		}</b><em>Object</em>
+		<p>轮播的可视区域高宽设置</p>
+	</li>
+
+	<li>
+		<b>step: 'auto'</b><em>String, Number</em>
+		<p>如果设置 <b>step</b> 为 auto，同时如果无法通过 style 获取每项的高宽，轮播里的每项都会直接应用 <b>view</b> 设置</p>
+	</li>
+
+	<li>
+		<b>data: undefined</b><em>Array</em>
+		<p>如果该参数没有设置内容，则直接从element 中根据 <b>selector</b> 获取</p>
+	</li>
+
+	<li>
+		<b>selector { 
+			outer: 'ul', 
+			inner: 'li' 
+		}</b><em></em>
+		<p>选择器</p>
+	</li>
+
+	<li>
+		<b>template: {
+			outer: '<${outer} ...>',
+			inner: '<${inner}>{data}</${inner}>'
+		},</b><em>Object</em>
+		<p>如果 <b>data</b> 为 Array 时，进行dom 渲染时的替换模板</p>
+	</li>
+
+	<li>
+		<b>indexButton: true</b><em>boolean</em>
+		<p>索引按钮，该按钮根据 轮播容器的总长度 / <b>step</b> 来输出按钮数量</p>
+	</li>
+
+	<li>
+		<b>dirButton: true</b><em>boolean</em>
+		<p>方向键按钮</p>
+	</li>
+
+	<li>
+		<b>dirButtonAutoHide: true</b><em>boolean</em>
+		<p>方向键按钮是否在鼠标未悬停的时候隐藏</p>
+	</li>
+
+	<li>
+		<b>duration: 300</b><em>Number</em>
+		<p>动画时间</p>
+	</li>
+
+	<li>
+		<b>index: 0</b><em>Number</em>
+		<p>默认展示第几项</p>
+	</li>
+
+	<li>
+		<b>animateType: 'silde'</b><em>String [ 'fade', 'silde' ]</em>
+		<p>动画效果类型</p>
+	</li>
+
+	<li>
+		<b>animateDir: 'hori'</b><em>String [ 'hori', 'vert' ]</em>
+		<p>如果是位移效果，可设置水平或垂直方向</p>
+	</li>
+
+	<li>
+		<b>autoPlay: true</b><em>boolean</em>
+		<p>是否自动播放</p>
+	</li>
+
+	<li>
+		<b>autoDelay: 4000</b><em>Number</em>
+		<p>自动播放的间隔时间 (ms)</p>
+	</li>
+
+	<li>
+		<b>onAnimateBefore: function(runner) {}</b><em>Function</em>
+	</li>
+
+	<li>
+		<b>onAnimateComplete: function(runner) {}</b><em>Function</em>
+	</li>
+
+	
+</ol>
+
+
+<code>
+	<textarea type="html">
+		<div class="carousel1 demo"></div>
+	</textarea>
+	<textarea type="js">
+		new Carousel( '.carousel1', {
+			view: {
+				width: 400,
+				height: 160
+			},
+			data: [{
+				data: '<img src="/tsm-ui/static/img/demo/1.jpg" />' }, {
+				data: '<img src="/tsm-ui/static/img/demo/2.jpg" />' }, {
+				data: 'data html'
+			}],
+			animateType: 'fade',
+			dirButtonAutoHide: false,
+			onAnimateBefore: function() {},
+			onAnimateComplete: function(elem) {}
+		});
+	</textarea>
+</code>
+
+
+
+<code>
+	<textarea type="html">
+		<div class="carousel2 demo">
+			<ul>
+				<li>1</li><li>2</li>
+				<li>3</li><li>4</li>
+				<li>5</li><li>6</li>
+				<li>7</li><li>8</li>
+			</ul>
+		</div>
+	</textarea>
+	<textarea type="js">
+		new Carousel( '.carousel2', {
+			view: {
+				width: 400,
+				height: 160
+			},
+			animateDir: 'vert',
+			step: 160, // step: 400 , step: 160, ...
+			autoPlay: false
+		});
+	</textarea>
+</code>
+
+
+
+<script>
+seajs.use( [ 'code2view', 'common:udo/ui/carousel' ], function( code2View, Carousel ) {
+
+	window.Carousel = Carousel;
+
+	code2View();
+	
+});
+
+</script>

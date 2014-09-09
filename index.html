@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<link rel="stylesheet" type="text/css" href="static/css/common.css">
+<link rel="stylesheet" type="text/css" href="static/css/page.css">
+<link rel="stylesheet" type="text/css" href="static/css/home.css">
+
+<script type="text/javascript" src="lib/js/seajs/sea.js"></script>
+
+<script type="text/javascript">
+seajs.config({ 
+	alias: {
+		'jquery':  '/tsm-ui/lib/js/jquery/jquery.js',
+
+		'code2view': '/tsm-ui/static/js/code2view.js',
+
+		'common:udo/ui/carousel':  '/tsm-ui/src/carousel/carousel.js'
+	}
+});
+
+seajs.use( 'jquery', function( jQuery ) {
+	window.$ = jQuery;
+});
+</script>
+
+<title></title>
+
+</head>
+
+<body>
+
+
+<div class="header">
+	<a class="logo"></a>
+	<div class="topsearch"><input /><button></button></div>
+</div>
+
+<div class="left_outter">
+	<div class="left_inner">
+
+		<!-- 侧边导航 -->
+		<ul class="sidemenu">
+			<li>
+				<a href="#welcome">Home</a>
+			</li>
+			<li>
+				<a href="#carousel">Carousel</a>
+			</li>
+		</ul>
+
+	</div>
+</div>
+
+
+<div class="right_outter">
+	<div class="right_inner">
+
+		<div class="main">
+			<!-- JS doms -->
+		</div>
+
+	</div>
+</div>
+
+
+<script type="text/javascript">
+seajs.use( '/tsm-ui/demo/home/home.js' );
+</script>
+
+</body>
+</html>
