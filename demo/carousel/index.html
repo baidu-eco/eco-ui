@@ -184,11 +184,9 @@ var demo_data = [{
 
 
 <script>
-seajs.use( [ 'code2view', 'common:udo/ui/carousel' ], function( code2View, Carousel ) {
+seajs.use( [ 'common:udo/ui/carousel' ], function( Carousel ) {
 
-	window.Carousel = Carousel;
-
-	code2View();
+	code2view({'Carousel': Carousel});
 	
 });
 

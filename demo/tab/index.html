@@ -1,0 +1,132 @@
+
+<link rel="stylesheet" type="text/css" href="/tsm-ui/src/tab/tab.css?1">
+<style type="text/css">
+
+.tab_cont {
+	border-top: 1px solid #ccc;
+	padding: 10px;
+	margin-bottom: 20px;
+	background: #fff;
+}
+</style>
+
+
+<h3>Tab 实例</h3>
+
+<ol class="code_params">
+	<li>
+		<b>...</b><em>xxx</em>
+		<p>还莫有写</p>
+	</li>
+</ol>
+
+
+<code>
+	<textarea type="html">
+		<div class="tab1">
+			<span>Handler 1</span>
+			<span>Handler 2</span>
+			<span>Handler 3</span>
+
+			<div class="tab_content tab_cont">1 content</div>
+			<div class="tab_content tab_cont">2 content</div>
+			<div class="tab_content tab_cont">3 content</div>
+		</div>
+	</textarea>
+	<textarea type="js">
+		new Tab( '.tab1', {
+			selector: 'span',
+			related: function(context) {
+				return context.find('.tab_content');
+			}
+		});
+	</textarea>
+</code>
+
+<code>
+	<textarea type="html">
+		<div class="tab2">
+			<a tab-related="#tab2_content1">Handler 1</a>
+			<a tab-related="#tab2_content2">Handler 2</a>
+		</div>
+
+		<div id="tab2_content1" class="tab_cont">1 content</div>
+		<div id="tab2_content2" class="tab_cont">2 content</div>
+	</textarea>
+	<textarea type="js">
+		new Tab( '.tab2', {
+			selector: 'a'
+		});
+	</textarea>
+</code>
+
+
+<code>
+	<textarea type="html">
+		<div class="tab3">
+			<a tab-related="/tsm-ui/static/img/demo/1.jpg">Handler 1</a>
+			<a tab-related="/tsm-ui/static/img/demo/2.jpg">Handler 2</a>
+		</div>
+
+		<div id="tab3_contents" class="tab_cont"></div>
+	</textarea>
+	<textarea type="js">
+		new Tab( '.tab3', {
+			selector: 'a',
+			dataType: 'img',
+			related: '#tab3_contents'
+		});
+	</textarea>
+</code>
+
+<code>
+	<textarea type="html">
+		<div class="tab4">
+			<a tab-related="/tsm-ui/test/page/1.html" data-type="html">Handler 1</a>
+			<a tab-related="/tsm-ui/test/data/data.json" data-type="json">Handler 2</a>
+
+			<div class="contents tab_cont"></div>
+		</div>
+	</textarea>
+	<textarea type="js">
+		new Tab( '.tab4', {
+			selector: 'a',
+			dataType: 'ajax',
+			isAjaxCache: true,
+			index: 1,
+			related: function(context) {
+				return context.find('.contents');
+			},
+			onAjaxSuccess: function( params, data ) {
+
+				if( params.data_type == 'html' ) {
+					params.related.html( data );
+				}
+				else if( params.data_type == 'json' ) {
+					var str = '';
+					for( var i = 0; i < data.length; i ++ ) {
+						str += 'name:'+ data[i].name + '<br>';
+					}
+
+					params.related.html( str );
+				}
+				else {
+					// do something
+				}
+			}
+		});
+	</textarea>
+</code>
+
+
+
+<script>
+seajs.use( [ 'common:udo/ui/tab' ], function( Tab ) {
+
+	code2view([
+		{ 'Tab': Tab }
+	]);
+	
+});
+
+</script>

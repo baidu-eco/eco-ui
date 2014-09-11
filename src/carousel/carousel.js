@@ -99,11 +99,11 @@ define('common:udo/ui/carousel', function(require, exports, module) {
 	// 主函数
 	var carousel = function(selector, options) {
 
+		this.timer = {};
+
 		this.elems = {
 			source: $(selector)
 		};
-
-		this.timer = {};
 
 		this.selector = selector;
 

@@ -13,15 +13,17 @@
 seajs.config({ 
 	alias: {
 		'jquery':  '/tsm-ui/lib/js/jquery/jquery.js',
-
 		'code2view': '/tsm-ui/static/js/code2view.js',
 
+		'common:udo/ui/tab':  '/tsm-ui/src/tab/tab.js',
 		'common:udo/ui/carousel':  '/tsm-ui/src/carousel/carousel.js'
 	}
 });
 
-seajs.use( 'jquery', function( jQuery ) {
+seajs.use( [ 'jquery', 'code2view' ], function( jQuery, code2view ) {
 	window.$ = jQuery;
+
+	window.code2view = code2view;
 });
 </script>
 
@@ -48,6 +50,9 @@ seajs.use( 'jquery', function( jQuery ) {
 			<li>
 				<a href="#carousel">Carousel</a>
 			</li>
+			<li>
+				<a href="#tab">Tab</a>
+			</li>
 		</ul>
 
 	</div>
@@ -66,7 +71,7 @@ seajs.use( 'jquery', function( jQuery ) {
 
 
 <script type="text/javascript">
-seajs.use( '/tsm-ui/demo/home/home.js' );
+seajs.use( '/tsm-ui/static/js/home.js' );
 </script>
 
 </body>
