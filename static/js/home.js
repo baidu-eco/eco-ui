@@ -24,8 +24,8 @@ define(function(require) {
 
 			var $li = $(matcher).parent();
 
-			$li.find('a').addClass('current');
-			$li.siblings().find('a').removeClass('current');
+			$li.addClass('current');
+			$li.siblings().removeClass('current');
 		}
 	}
 

@@ -1,0 +1,42 @@
+
+
+<style type="text/css">
+
+</style>
+
+
+<h3>Paging 实例</h3>
+
+<ol class="code_params">
+	<li>
+		<b>...</b><em>xxx</em>
+		<p>还莫有写</p>
+	</li>
+</ol>
+
+
+<code>
+	<textarea type="html">
+		<div class="paging">
+			<a href="#">1</a>
+			<a href="#">2</a>
+			<a href="#">3</a>
+			<a href="#">4</a>
+			<a href="#">5</a>
+			<a href="#">6</a>
+		</div>
+	</textarea>
+	<textarea type="js">
+		new Paging( '.paging > a' );
+	</textarea>
+</code>
+
+
+<script>
+seajs.use( [ 'common:udo/ui/paging' ], function( Paging ) {
+
+	code2view({ 'Paging': Paging });
+	
+});
+
+</script>

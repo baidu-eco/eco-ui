@@ -75,21 +75,39 @@ input, button, span, label {
 	.sidemenu {
 		/*padding: 5px 0;*/
 	}
-	.sidemenu li a {
+	.sidemenu li {
 		display: block;
-		padding: 10px 20px;
+		padding: 8px 20px;
 		cursor: pointer;
 		text-align: right;
-		color: #fff;
+		color: #ddd;
 		text-decoration: none;
+		line-height: 20px;
 	}
-	.sidemenu li a:hover {
+	.sidemenu li:hover {
 		background: #85C7EB;
 		color: #666;
 	}
-	.sidemenu li a.current:hover, .sidemenu li a.current {
+	.sidemenu li.current:hover, .sidemenu li.current {
 		background: #9ED2EF;
 		color: #333;
+	}
+	.sidemenu li.current a {
+		color: #333;
+	}
+	.sidemenu li a {
+		color: #fff;
+		display: block;
+		text-decoration: none;
+	}
+	.sidemenu li:hover a {
+		color: #333;
+	}
+	.sidemenu li span {
+		display: none;
+	}
+	.sidemenu li:hover span, .sidemenu li.current span {
+		display: block;
 	}
 
 

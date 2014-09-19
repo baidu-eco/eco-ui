@@ -24,9 +24,9 @@
 <code>
 	<textarea type="html">
 		<div class="tab1">
-			<span>Handler 1</span>
+			<span><a href="http://baidu.com" target="_blank">Href Handler 1</a></span>
 			<span>Handler 2</span>
-			<span>Handler 3</span>
+			<span>sHandler 3</span>
 
 			<div class="tab_content tab_cont">1 content</div>
 			<div class="tab_content tab_cont">2 content</div>
@@ -36,6 +36,7 @@
 	<textarea type="js">
 		new Tab( '.tab1', {
 			selector: 'span',
+			eventType: 'mouseover',
 			related: function(context) {
 				return context.find('.tab_content');
 			}
@@ -46,8 +47,8 @@
 <code>
 	<textarea type="html">
 		<div class="tab2">
-			<a tab-related="#tab2_content1">Handler 1</a>
-			<a tab-related="#tab2_content2">Handler 2</a>
+			<a tab-related="#tab2_content1">Selector Handler 1</a>
+			<a tab-related="#tab2_content2">Selector Handler 2</a>
 		</div>
 
 		<div id="tab2_content1" class="tab_cont">1 content</div>
@@ -64,8 +65,8 @@
 <code>
 	<textarea type="html">
 		<div class="tab3">
-			<a tab-related="/tsm-ui/static/img/demo/1.jpg">Handler 1</a>
-			<a tab-related="/tsm-ui/static/img/demo/2.jpg">Handler 2</a>
+			<a tab-related="/tsm-ui/static/img/demo/1.jpg">Image Handler 1</a>
+			<a tab-related="/tsm-ui/static/img/demo/2.jpg">Image Handler 2</a>
 		</div>
 
 		<div id="tab3_contents" class="tab_cont"></div>
@@ -82,8 +83,8 @@
 <code>
 	<textarea type="html">
 		<div class="tab4">
-			<a tab-related="/tsm-ui/test/page/1.html" data-type="html">Handler 1</a>
-			<a tab-related="/tsm-ui/test/data/data.json" data-type="json">Handler 2</a>
+			<a tab-related="/tsm-ui/test/page/1.html" data-type="html">Ajax Handler 1</a>
+			<a tab-related="/tsm-ui/test/data/data.json" data-type="json">Ajax Handler 2</a>
 
 			<div class="contents tab_cont"></div>
 		</div>
@@ -123,9 +124,7 @@
 <script>
 seajs.use( [ 'common:udo/ui/tab' ], function( Tab ) {
 
-	code2view([
-		{ 'Tab': Tab }
-	]);
+	code2view({ 'Tab': Tab });
 	
 });
 
