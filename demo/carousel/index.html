@@ -160,16 +160,18 @@ var demo_data = [{
 			view: {
 				width: 400,
 				height: 160
-			},
-			data: [{
+			}
+			,data: [{
 				data: '<img src="/tsm-ui/static/img/demo/1.jpg" />' }, {
 				data: '<img src="/tsm-ui/static/img/demo/2.jpg" />' }, {
 				data: 'data html'
-			}],
-			// animateType: 'fade',
-			dirButtonAutoHide: false,
-			onAnimateBefore: function() {},
-			onAnimateComplete: function(elem) {}
+			}]
+			// ,animateType: 'fade'
+			,dirButtonAutoHide: false
+			,onAnimateBefore: function() {}
+			,onAnimateComplete: function(elem, index_arr) {
+				console.log( index_arr )
+			}
 			,isPages: false
 			,autoPlay: false
 		});
@@ -194,10 +196,13 @@ var demo_data = [{
 			view: {
 				width: 390,
 				height: 160
-			},
-			isPages: true,
-			// animateDir: 'vert',
-			autoPlay: false
+			}
+			,isPages: true
+			// ,animateDir: 'vert'
+			,autoPlay: false
+			,onAnimateComplete: function(elem, index_arr) {
+				console.log( index_arr )
+			}
 			,update: function( elems ) {
 				elems.list.filter(function() {
 					if( $( this ).index() % 4 == 0 ) {

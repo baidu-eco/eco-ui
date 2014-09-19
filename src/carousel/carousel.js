@@ -559,17 +559,25 @@ define('common:udo/ui/carousel', function(require, exports, module) {
 		// 更改当前页信息
 		updatePages: function( index ) {
 
+			var index_arr = [], i = index * this.stepNum;
+
+			// 添加到索引数组中
+			index_arr.push( i );
+			
+			if(this.stepNum > 1) {
+
+				// 添加到索引数组中
+				index_arr.push( index_arr[0] + this.stepNum - 1 );
+			}
+
 			if( this.def.isPages ) {
 
-				var n = index * this.stepNum + 1;
-				
-				if(this.stepNum > 1) {
-
-					n = n + '-' + ( n + this.stepNum - 1 );
-				}
-
-				this.elems.pages.find('span').eq(0).html( n );
+				this.elems.pages.find('span').eq(0).html(
+					( index_arr[0] + 1 ) + "-" + ( index_arr[1] + 1 )
+				);
 			}
+			
+			return index_arr;
 		},
 
 		// 动画接口，该函数允许被修改
@@ -578,9 +586,10 @@ define('common:udo/ui/carousel', function(require, exports, module) {
 			var method = this.effect[this.def.animateType];
 
 			if (method !== undefined) {
-				method.call(this, index, elem);
 
-				this.updatePages(index, elem);
+				var index_arr = this.updatePages(index, elem);
+
+				method.call(this, index, elem, index_arr);
 			} else {
 				_throw(this.selector, 'animateType [' + this.def.animateType + '] unkown.');
 			}
@@ -590,16 +599,18 @@ define('common:udo/ui/carousel', function(require, exports, module) {
 		effect: {
 
 			// 渐隐渐现效果
-			fade: function(index, elem) {
+			fade: function(index, elem, index_arr) {
 
 				var elem = this.elems.list.eq(index);
 
 				elem.fadeIn(this.def.duration);
 				elem.siblings().hide();
+
+				this.def.onAnimateComplete.call(this, this.elems.runner, index_arr);
 			},
 
 			// 滑动效果
-			silde: function(index, elem) {
+			silde: function(index, elem, index_arr) {
 
 				var _this = this,
 
@@ -615,7 +626,7 @@ define('common:udo/ui/carousel', function(require, exports, module) {
 
 					duration: this.def.duration,
 					complete: function() {
-						_this.def.onAnimateComplete.call(_this, _this.elems.runner);
+						_this.def.onAnimateComplete.call(_this, _this.elems.runner, index_arr);
 					}
 				});
 			}
