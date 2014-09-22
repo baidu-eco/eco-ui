@@ -1,0 +1,15 @@
+{	
+	"releaseMap": [
+		{
+			"replace": true,
+			"src": "src/",
+			"dest": [ "dist/" ]
+		},
+
+		{
+			"src": "D:/dev/tsm-ui/",
+			"dest": [ "D:/git-pro/tsm-ui/" ],
+			"filter": [ "node_modules" ]
+		}
+	]
+}
