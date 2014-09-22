@@ -4,7 +4,7 @@
  * Date: 2014.09.09
  *
  */
-
+define('common:udo/ui/paging', function(require, exports, module) {
 
 	var classes = {
 		tab: 'upaging',
@@ -56,3 +56,4 @@
 
 
 	module.exports = paging;
+});

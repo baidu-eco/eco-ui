@@ -4,7 +4,7 @@
  * Date: 2014.09.09
  *
  */
-
+define('common:udo/ui/tab', function(require, exports, module) {
 
 	var classes = {
 		tab: 'utab',
@@ -254,3 +254,4 @@
 	module.exports = tab;
 
 
+});

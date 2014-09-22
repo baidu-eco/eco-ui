@@ -4,7 +4,7 @@
  * Date: 2014.09.02
  *
  */
-
+define('common:udo/ui/carousel', function(require, exports, module) {
 
 	var classes = {
 		carousel: 'carousel',
@@ -636,3 +636,4 @@
 
 	module.exports = carousel;
 
+});

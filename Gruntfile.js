@@ -29,11 +29,31 @@ module.exports = function(grunt) {
 
 
 	for (var i = 0; i < _rArr.length; i++) {
-		eachFiles(_rArr[i]);
+
+		var name = _rArr[i].name,
+			task = _rArr[i].task;
+
+		readProduct(_rArr[i]);
 	}
 
-	// 遍历文件
-	function eachFiles(conf) {
+	// 遍历项目
+	function readProduct(json) {
+
+		var task = json.task;
+
+		if( json.release ) {
+
+			for (var i = 0; i < task.length; i++) {
+				var item = task[i];
+
+				reader(item);
+			}
+		}
+	}
+
+
+	// 遍历项目配置
+	function reader(conf) {
 
 		grunt.file.recurse(
 
@@ -46,13 +66,7 @@ module.exports = function(grunt) {
 				// 不在过滤器中
 				if( !is_f ) {
 
-					var npath = '';
-
-					if (subdir !== undefined) {
-						npath += subdir + "/";
-					}
-
-					npath += filename;
+					var npath = getNewPath(subdir, filename);
 
 					// js 需要进行特殊处理
 					if (/.*\.(?:js)/.test(filename)) {
@@ -64,13 +78,6 @@ module.exports = function(grunt) {
 							grunt.file.write(dest + npath, cont);
 						});
 					}
-					
-					// else if(/.*\.(?:png|gif|ico|jpg|jpeg)/.test(filename)) {
-
-					// 	releasePush(conf, function(dest) {
-					// 		grunt.file.copy(abspath, dest + npath);
-					// 	});
-					// }
 
 					// 其他文件直接进行 copy
 					else {
@@ -82,6 +89,18 @@ module.exports = function(grunt) {
  				}
 			}
 		);
+	}
+
+	// 获取新的路径名
+	function getNewPath(dir, filename) {
+
+		var npath = '';
+
+		if (dir !== undefined) {
+			npath += dir + "/";
+		}
+
+		return npath += filename;
 	}
 
 	// 过滤器
@@ -108,14 +127,9 @@ module.exports = function(grunt) {
 		var cont = grunt.file.read(abspath);
 
 		// 根据 json 配置 replace 文件之后输出
-		if (grunt.file.match("*.js", filename).length) {
-
-			if (conf.replace == true) {
-				cont = _Release.replace.script(cont);
-			}
+		if (conf.replace == true) {
+			cont = _Release.replace.script(cont);
 		}
-
-
 
 		return cont;
 	}
