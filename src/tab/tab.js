@@ -253,5 +253,4 @@ define('common:udo/ui/tab', function(require, exports, module) {
 
 	module.exports = tab;
 
-
 });

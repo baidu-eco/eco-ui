@@ -573,7 +573,11 @@ define('common:udo/ui/carousel', function(require, exports, module) {
 			if( this.def.isPages ) {
 
 				this.elems.pages.find('span').eq(0).html(
-					( index_arr[0] + 1 ) + "-" + ( index_arr[1] + 1 )
+					( index_arr[0] + 1 ) + (
+							index_arr[1] ? 
+							"-" + ( index_arr[1] + 1 ) :
+							""
+						)
 				);
 			}
 			
