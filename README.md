@@ -54,5 +54,5 @@
 ## 贡献者：
 - **章鱼** [zhangzujin@baidu.com](mailto:zhangzujin@baidu.com "发邮件给章鱼")
 - **deo** [denglingbo@baidu.com](mailto:denglingbo@baidu.com "发邮件给deo")
-- **lee.than** [wangjuan12@baidu.com](mailto:wangjuan12@baidu.com "发邮件给lee.than")
+- **Jeane** [wangjuan12@baidu.com](mailto:wangjuan12@baidu.com "发邮件给lee.than")
 - **Jayce** [chenchao15@baidu.com](mailto:chenchao15@baidu.com "发邮件给lee.than")
